@@ -1,5 +1,4 @@
-Function Enter-Site
-{
+Function Enter-Site {
 
 <#
 
@@ -8,13 +7,15 @@ Function Enter-Site
 Performs a login to a given SCCM Site Server.
 
 
-
 .DESCRIPTION
 
 Performs a login to a SCCM Site Server and switches to the required PSDrive. The user initiating the module must have the required permissions on the SCCM Site Server.
 
 For more information about Cmdlets see 'about_Functions_CmdletBindingAttribute'.
 
+Note: ConfigurationManager by default is not in the $ENV:PSModulePath, 
+so you have to either add it to that variable or create a junction like this:
+PS > junction.exe ConfigurationManager "C:\Program Files (x86)\Microsoft Configuration Manager\AdminConsole\bin"
 
 
 .OUTPUTS
@@ -22,11 +23,9 @@ For more information about Cmdlets see 'about_Functions_CmdletBindingAttribute'.
 This Cmdlet returns the name of the SCCM Server. On failure the string contains $null.
 
 
-
 .PARAMETER SCCMSite
 
 The Sitecode of the SCCM Site to connect to.
-
 
 
 .PARAMETER SCCMModulePath
@@ -34,13 +33,11 @@ The Sitecode of the SCCM Site to connect to.
 The Path to the SCCMModulePath.
 
 
-
 .EXAMPLE
 
 Perform a login to a SCCM Site.
 
 Connect-SCCMSite -SiteCode SITE1
-
 
 
 .LINK
@@ -65,11 +62,6 @@ Param
 	[ValidateNotNullOrEmpty()]
 	[Alias("SiteCode")]
 	[string] $SCCMSiteCode
-	,
-	[Parameter(Mandatory = $false, Position = 1)]
-	[ValidateNotNullOrEmpty()]
-	[string]$SCCMModulePath = "$(split-path $Env:SMS_ADMIN_UI_PATH)\ConfigurationManager.psd1"
-	
 )
 
 
@@ -79,15 +71,6 @@ try
 	$datBegin = [datetime]::Now;
 	[string] $fn = $MyInvocation.MyCommand.Name;
 	Log-Debug -fn $fn -msg ("CALL")
-	
-	# Site drive not available, check if module is loaded
-	Log-Debug $fn ('Check if module ConfigurationManager is loaded: {0}' -f $SCCMModulePath )
-	if( !( get-module -name ConfigurationManager) )
-	{
-			Log-Debug $fn ('Importing SCCM Module: {0}' -f $SCCMModulePath )
-			if ( Test-Path $SCCMModulePath) { Import-Module -Name $SCCMModulePath } else { throw ('SCCMModulePath not found {0}' -f $SCCModulePath)}
-	}
-		
 	
 	$PSD = Get-PSdrive -PSProvider CMSite -name $SCCMSiteCode -ea SilentlyContinue
 	if ( $PSD )
@@ -148,8 +131,8 @@ if($MyInvocation.ScriptName) { Export-ModuleMember -Function Enter-Site; }
 # SIG # Begin signature block
 # MIIW3AYJKoZIhvcNAQcCoIIWzTCCFskCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUMjjiKtZD/BDUDQRD0wvPfauX
-# aF+gghGYMIIEFDCCAvygAwIBAgILBAAAAAABL07hUtcwDQYJKoZIhvcNAQEFBQAw
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUTiXE5pHKMmGA15lvK2Ult31I
+# I6ygghGYMIIEFDCCAvygAwIBAgILBAAAAAABL07hUtcwDQYJKoZIhvcNAQEFBQAw
 # VzELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNV
 # BAsTB1Jvb3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAeFw0xMTA0
 # MTMxMDAwMDBaFw0yODAxMjgxMjAwMDBaMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
@@ -247,25 +230,25 @@ if($MyInvocation.ScriptName) { Export-ModuleMember -Function Enter-Site; }
 # bnYtc2ExJzAlBgNVBAMTHkdsb2JhbFNpZ24gQ29kZVNpZ25pbmcgQ0EgLSBHMgIS
 # ESFgd9/aXcgt4FtCBtsrp6UyMAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQow
 # CKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcC
-# AQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBQ7m50Aae+2jRZPQvTZ
-# Bh42aKGYZDANBgkqhkiG9w0BAQEFAASCAQDIRxt1joaUEX3I8HFbuwaayamcSMVt
-# /dp37IwJLxVJYL6A+0MxJSYNXUDvusEeLRTuBmDwvNoEQM0QrFbBxF4+2V793jMZ
-# 17PFUzpp4M0tuS4oA2CJS3lbtNv4XjIYX4ZZs4H3XiXIL6foeSP7BXVFfp2AQ+V3
-# kdcsTDWGVcbUBZF2xSqFT2t7CGVoPbX5/CmTjn8PtNU1oE8dCD92MErdq3obhXAR
-# kREcR3Rksj3Gu5QEJ7lNSw3CmGi5Eh1n0VZiSCzA9Ku8TuWp2VyXhjoBWaDLiQWv
-# qPn9zd9boHTCErZ80bCMRHBYuylwjqwVuXY2z4otzKkM1mwOC+mapSVToYICojCC
+# AQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBS74HufRfFAEwH61rCC
+# VPqY6SHBozANBgkqhkiG9w0BAQEFAASCAQCeORIbY/TIwDzKxqAD3luQxQTAPV7F
+# h43Fs6qnkAr64ZX4pPIi/kjNWSXEotdl5i9xvZ7shCLXV69lLigKbQoMpmksoYQp
+# EbDEdcVwQ8iYVMfeVD9T9iZlzPYpn21AVHxJzJ/bTf8uMOnoaE/k4EkPLyhmvGdu
+# oW96ENg1wtaWgkkKVKX2/LijNBbOq9xLszHNR+87JRkReGwonTU6bVMIyzaJCbAY
+# Qkl1Io4f1qh/IfDm4SJsvUz/eU/pDetnIYKisLe0iWv/+pPQfTo62ag78wVLJaAB
+# DJH1IioE8osUxSH5UF/jSdvXLHqnggSzRXqLx28FN9zLge3FWMyI+xjQoYICojCC
 # Ap4GCSqGSIb3DQEJBjGCAo8wggKLAgEBMGgwUjELMAkGA1UEBhMCQkUxGTAXBgNV
 # BAoTEEdsb2JhbFNpZ24gbnYtc2ExKDAmBgNVBAMTH0dsb2JhbFNpZ24gVGltZXN0
 # YW1waW5nIENBIC0gRzICEhEhQFwfDtJYiCvlTYaGuhHqRTAJBgUrDgMCGgUAoIH9
 # MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE0MTEy
-# NjA3Mzg1MFowIwYJKoZIhvcNAQkEMRYEFJANc1Jo0SoHO09o2AmhQlkWDZczMIGd
+# NzE0MTYzMFowIwYJKoZIhvcNAQkEMRYEFLEAoowHyyOQApDUCxf+jfsPICMmMIGd
 # BgsqhkiG9w0BCRACDDGBjTCBijCBhzCBhAQUjOafUBLh0aj7OV4uMeK0K947NDsw
 # bDBWpFQwUjELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2Ex
 # KDAmBgNVBAMTH0dsb2JhbFNpZ24gVGltZXN0YW1waW5nIENBIC0gRzICEhEhQFwf
-# DtJYiCvlTYaGuhHqRTANBgkqhkiG9w0BAQEFAASCAQAPf57xdLO3JajfV2DycavQ
-# UFXvWW7KrH02pE1nge/vm8d0MadMA57zKjDGLb/0wBVnC49nmCVzuXN41pat4Jk0
-# TCleyual5Sxw6/luQo+rzF0tTPz4uq6GAC1qAyS4JwjI6CqL+83f/9HAzvcjMOf+
-# FwiiQmhBFsaDnJ26iaf7lLOOt7a9zvPLJRjanOxGm4By8Z+KKdI6nMy/GR05NN50
-# W/LLLS3UIlAiPyot5V49fiMgYzVWSU3lNgtrPiZiG1NM+iYbs9+8XAMXxuSP8xS7
-# zBCviivQ3zdvy7RnvDd5Y8RuXBFS6XhZb8WpDKRiaCgKr1Vy8ep2NCUylep+k6xt
+# DtJYiCvlTYaGuhHqRTANBgkqhkiG9w0BAQEFAASCAQBp+H2hAychwYoyqzKDEwSd
+# KKEieRpHJPGm8+jnWO7ZUYcjvUi77SBZYggUggRQue50K55TYZ6TeBJ4Tnhfpxs+
+# utOmjXXPiVWsN7h5g0xSjY1Su+ZyItUKBx0hHsuJIwEaUAhkGwEbKnq/z/hJ7ds4
+# QjZIJOZZ+HvVptGfWsxL0jeXG+MK2xZCbjADZD7BrA4P1YbeIzpjO4hMJxSfcfEA
+# 3Y2NO6zIjFj/bYC8KrZv/J3TMZsuIonA+yTF3pWP4q0gIjRi0mGrh5iFGasN36z3
+# fX12NaDhHbo6QaN03+zSIrGZoH/N5lbhVG1CmPUplhvJkfIGcDcjubnNGaYJZAvM
 # SIG # End signature block
