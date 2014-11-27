@@ -1,4 +1,39 @@
 Function Add-OSDDeviceVariables {
+<#
+.SYNOPSIS
+
+Add SCCM device variables to a SCCM computer object.
+
+
+.DESCRIPTION
+
+Add SCCM device variables to a SCCM computer object.
+The is Cmdlet makes use of several KeyedNameValue pairs. You have to initialise them before using this Cmdlet:
+
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' BypassChooser <BypassChooser>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' ComputerDomain <Domain>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' CumulusWindowsFeatures <CumulusWinFeatures>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' IpAddressMode <IPSetMode>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' ApplicationProfile <AppProfile>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' ApplicationTree <AppTree>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' Trend <Trend>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' NetworkSpeed <NetworkSpeed>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' EmailAddress <EmailAddress>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' OperatingSystem <OS>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.OsdDeviceVariables' ComputerName <ComputerName>
+
+
+.LINK
+
+Online Version: http://dfch.biz/biz/dfch/PS/Sccm/Utilities/Add-OSDDeviceVariables/
+
+
+.NOTES
+
+See module manifest for required software versions and dependencies at: http://dfch.biz/biz/dfch/PS/Sccm/Utilities/biz.dfch.PS.Sccm.Utilities.psd1/
+
+
+#>
 
 PARAM ( 
 	[Parameter(Mandatory = $true, Position = 0)]
@@ -47,6 +82,9 @@ PARAM (
 	,
 	[Parameter(Mandatory = $false, Position = 11)]
 	[string] $CumulusWindowsFeatures = $null
+	,
+	[Parameter(Mandatory = $false)]
+	[string] $VariableKNVKey = 'Sccm.OsdDeviceVariables'
 )
 	try
 	{
@@ -55,7 +93,6 @@ PARAM (
 		Log-Debug -fn $fn -msg ("CALL")
 		
 		$VariableNames = @{};
-		$VariableKNVKey = 'Sccm.OsdDeviceVariables'
 		$VariableNames.Add( 'BypassChooser', (Get-CumulusKeyNameValue $VariableKNVKey BypassChooser -Select Value).Value );
 		$VariableNames.Add( 'ComputerDomain', (Get-CumulusKeyNameValue $VariableKNVKey ComputerDomain -Select Value).Value );
 		$VariableNames.Add( 'CumulusWindowsFeatures', (Get-CumulusKeyNameValue $VariableKNVKey CumulusWindowsFeatures -Select Value).Value );
@@ -118,8 +155,8 @@ if($MyInvocation.ScriptName) { Export-ModuleMember -Function Add-OSDDeviceVariab
 # SIG # Begin signature block
 # MIIW3AYJKoZIhvcNAQcCoIIWzTCCFskCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU4lAY6hDplD6/Sq0UgAyfF95t
-# hU2gghGYMIIEFDCCAvygAwIBAgILBAAAAAABL07hUtcwDQYJKoZIhvcNAQEFBQAw
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU9iylkPJzEZXk3PLvgxYAKi7T
+# WbmgghGYMIIEFDCCAvygAwIBAgILBAAAAAABL07hUtcwDQYJKoZIhvcNAQEFBQAw
 # VzELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNV
 # BAsTB1Jvb3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAeFw0xMTA0
 # MTMxMDAwMDBaFw0yODAxMjgxMjAwMDBaMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
@@ -217,25 +254,25 @@ if($MyInvocation.ScriptName) { Export-ModuleMember -Function Add-OSDDeviceVariab
 # bnYtc2ExJzAlBgNVBAMTHkdsb2JhbFNpZ24gQ29kZVNpZ25pbmcgQ0EgLSBHMgIS
 # ESFgd9/aXcgt4FtCBtsrp6UyMAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQow
 # CKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcC
-# AQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBRCLuk0+xrLY2+Eo37s
-# Xf7oRB97JTANBgkqhkiG9w0BAQEFAASCAQBro7gpnI0I5h1Gx5hosPdGKr1eGrIT
-# TEvjMT+HCrviKLGgLg6aZm5MPLAXc+yqyiOkRGFEAF1XMWjcfF6wj97mLuu3tabY
-# j4BoQIl7cd3Lr1cdxmfcLeqJ42gV7Lj4im5+W4PyHDOynIsuSIuv8YXfYmxW0ifY
-# +YoAbD0sB1x8aitWZrboUabazH/YZvXsduQLqF6/ztLBjW+ubDh6geQROobje+rb
-# Po6LJw6IsAeFVmmyCup2RpRlCvltCGCFpGDmj7437RTcBsvys6srFGqHpFTw//qM
-# DeMmBOFQ6vURJzfrJ4olxqngJ12RO7gFAtn+tHMd7OG7UoLDKiEET/DAoYICojCC
+# AQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBSWkfpPD35IGGn2B1iI
+# smQnbQJ0SzANBgkqhkiG9w0BAQEFAASCAQCXYVXe2OZVkEd3WxPDqoF22lB4Ld6r
+# 1UAVwMLBcQIa0qAbDo7ywE5v9dpuINc+1R3wAnd/VfFfZoZnJF4faeSWYWqPlK/2
+# V3YQdENTd16fL5ZVUcJOvNF5/32kgX5UoDjksUe4h56l4JxldiUfpi/NCWSQhE1Q
+# GsF3lkgjuDjMC2v7r3C0iXJiPt055fqHq/oMTrxM+jgEDHz+mV0lEciNgLACHAvm
+# snm5aUG5oYhIMVUZOu8x9zp63kT4JU5gD37REE6WDP3rUmc499ZWPj7apNIz4oj3
+# eTVeJ61MV2EpRBu3SizqsF7z1Wj0Swq9EAktlsFSpwxciUBKfu4tvLryoYICojCC
 # Ap4GCSqGSIb3DQEJBjGCAo8wggKLAgEBMGgwUjELMAkGA1UEBhMCQkUxGTAXBgNV
 # BAoTEEdsb2JhbFNpZ24gbnYtc2ExKDAmBgNVBAMTH0dsb2JhbFNpZ24gVGltZXN0
 # YW1waW5nIENBIC0gRzICEhEhQFwfDtJYiCvlTYaGuhHqRTAJBgUrDgMCGgUAoIH9
 # MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE0MTEy
-# NzEyMDYzMFowIwYJKoZIhvcNAQkEMRYEFNhE0wjqM6uBhZ871tx0g0294kBUMIGd
+# NzEyNTUwMFowIwYJKoZIhvcNAQkEMRYEFEiHaAie32YooUlbxiTxMA5ADBPrMIGd
 # BgsqhkiG9w0BCRACDDGBjTCBijCBhzCBhAQUjOafUBLh0aj7OV4uMeK0K947NDsw
 # bDBWpFQwUjELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2Ex
 # KDAmBgNVBAMTH0dsb2JhbFNpZ24gVGltZXN0YW1waW5nIENBIC0gRzICEhEhQFwf
-# DtJYiCvlTYaGuhHqRTANBgkqhkiG9w0BAQEFAASCAQCLbGU0ja3h79DqRxoRcT8r
-# PJCRFUam5EOc917ACAHdkDsUZF/06vtkeF12hIAWVKtv3mF1Debd5xbccaMhrrzP
-# d1chnnKclVtrm6sWjihfq+/sdF08+47WwhCM/c45zUNmI3d8zGAQow0PzdifJH6n
-# glEhix3+jTqlILjMnehhmPtYNdeidW2ACS8GUcDav1PJy5VJ1XEWH/fmljH2S7XE
-# yOEWyWQycBJuAW+qU1toyzh1a1XZ2jq/ubl4JiwmWW+r7W3G3LtcjosFmnfOQ7iW
-# o6EUZ8jSuALsyl3uH/9z8TGiFkkVDjzmfmdJslROOLQmRdxCSDeRakeLfcJFNAqt
+# DtJYiCvlTYaGuhHqRTANBgkqhkiG9w0BAQEFAASCAQAlnAkl5/i/j/QAm2hwdTQ6
+# obypX5JiIPfaQke5BwANjle6r+piLjXbpJoRafZ4Ux6zPBOUbRk6EO+HH+NaLpTl
+# Oby5YrFqACkY6VjIz0X5MyazH5eLNnYMdrQmqh9fiTOC1Zx1CLEiL9xv4BTZS4DG
+# hrUw3TIxsIt26N7pQay6BkIQ5q/xVPTVXdxRYaNQl4b8wd+WVBVAsgo1g5gn2yDL
+# XWheGJxcrUuMrw4L1BZyvIMvT1CkhkUzQo172Zq/hIlFlLAxmeHx5XN4yggTf8PW
+# bCDy8MIZcWsz34m3zN1Ch3UOvV9ExB7C1hPwcPOQaQypFQQOMDpeEytmqdOaYVgp
 # SIG # End signature block

@@ -1,4 +1,35 @@
 function Add-AdditionalStaticIPModeOSDDeviceVariables {
+<#
+.SYNOPSIS
+
+Add SCCM device variables to a SCCM computer object.
+
+
+.DESCRIPTION
+
+Add SCCM device variables to a SCCM computer object.
+The is Cmdlet makes use of several KeyedNameValue pairs. You have to initialise them before using this Cmdlet:
+
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.AdditionalStaticIPModeOSDDeviceVariables' AdapterID <AdpID>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.AdditionalStaticIPModeOSDDeviceVariables' DOGateway <StaticGateway>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.AdditionalStaticIPModeOSDDeviceVariables' DOIpAddress <StaticIPAddress>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.AdditionalStaticIPModeOSDDeviceVariables' DOStaticDNS1 <StaticDNS1>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.AdditionalStaticIPModeOSDDeviceVariables' DOStaticDNS2 <StaticDNS2>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.AdditionalStaticIPModeOSDDeviceVariables' DOSubnetMask <StaticSubnetMask>
+Set-CumulusKeyNameValue -CreateIfNotExist 'Sccm.AdditionalStaticIPModeOSDDeviceVariables' DODnsSuffix <DnsSuffix>
+
+
+.LINK
+
+Online Version: http://dfch.biz/biz/dfch/PS/Sccm/Utilities/Add-AdditionalStaticIPModeOSDDeviceVariables.ps1/
+
+
+.NOTES
+
+See module manifest for required software versions and dependencies at: http://dfch.biz/biz/dfch/PS/Sccm/Utilities/biz.dfch.PS.Sccm.Utilities.psd1/
+
+
+#>
 
 PARAM
 (
@@ -33,6 +64,9 @@ PARAM
 	[Parameter(Mandatory = $false, Position = 9, ParameterSetName='Static')]
 	[ValidateNotNullOrEmpty()]
 	[string] $AdapterID = '0'
+	,
+	[Parameter(Mandatory = $false)]
+	[string] $VariableKNVKey = 'Sccm.AdditionalStaticIPModeOSDDeviceVariables'
 )
 	try
 	{
@@ -42,7 +76,6 @@ PARAM
 		Log-Debug -fn $fn -msg ("CALL")
 
 		$VariableNames = @{};
-		$VariableKNVKey = 'Sccm.AdditionalStaticIPModeOSDDeviceVariables';
 		$VariableNames.Add( 'AdapterID', (Get-CumulusKeyNameValue $VariableKNVKey AdapterID -Select Value).Value );
 		$VariableNames.Add( 'DOGateway', (Get-CumulusKeyNameValue $VariableKNVKey DOGateway -Select Value).Value );
 		$VariableNames.Add( 'DOIpAddress', (Get-CumulusKeyNameValue $VariableKNVKey DOIpAddress -Select Value).Value );
@@ -79,8 +112,8 @@ if($MyInvocation.ScriptName) { Export-ModuleMember -Function Add-AdditionalStati
 # SIG # Begin signature block
 # MIIW3AYJKoZIhvcNAQcCoIIWzTCCFskCAQExCzAJBgUrDgMCGgUAMGkGCisGAQQB
 # gjcCAQSgWzBZMDQGCisGAQQBgjcCAR4wJgIDAQAABBAfzDtgWUsITrck0sYpfvNR
-# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQU6/6A0PBPyJzdik1TTIF5yDUy
-# vjSgghGYMIIEFDCCAvygAwIBAgILBAAAAAABL07hUtcwDQYJKoZIhvcNAQEFBQAw
+# AgEAAgEAAgEAAgEAAgEAMCEwCQYFKw4DAhoFAAQUJLYXqRjTWtBOjzPMy8lVDjmY
+# Dp+gghGYMIIEFDCCAvygAwIBAgILBAAAAAABL07hUtcwDQYJKoZIhvcNAQEFBQAw
 # VzELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExEDAOBgNV
 # BAsTB1Jvb3QgQ0ExGzAZBgNVBAMTEkdsb2JhbFNpZ24gUm9vdCBDQTAeFw0xMTA0
 # MTMxMDAwMDBaFw0yODAxMjgxMjAwMDBaMFIxCzAJBgNVBAYTAkJFMRkwFwYDVQQK
@@ -178,25 +211,25 @@ if($MyInvocation.ScriptName) { Export-ModuleMember -Function Add-AdditionalStati
 # bnYtc2ExJzAlBgNVBAMTHkdsb2JhbFNpZ24gQ29kZVNpZ25pbmcgQ0EgLSBHMgIS
 # ESFgd9/aXcgt4FtCBtsrp6UyMAkGBSsOAwIaBQCgeDAYBgorBgEEAYI3AgEMMQow
 # CKACgAChAoAAMBkGCSqGSIb3DQEJAzEMBgorBgEEAYI3AgEEMBwGCisGAQQBgjcC
-# AQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTeQXL5I0T9FlEdnAeY
-# XIUDSTYxMjANBgkqhkiG9w0BAQEFAASCAQBzpt3OtXcfW+k1Q1vSdtPhkFGR38W2
-# 9AN2C07YMG10gnmNuhl14uW9QLGNk2XqXD+He5dl4DeFzFyvZ9XsVL0WOleIglwX
-# roEbG5GbZf5lmtEGzYDzLcn8oboob11SX5/qXCr1nLErvrd/j0V/Nh1NDKmQksPo
-# LiMJgFUl0Ul3UsET32veOBF68isDmtb0f0ApVDy+XZyMQXcMJpGfcehHEsqrgidG
-# bM/KCK7P1g0mzHkfkoQhXyRBullPpfn0Yi0ccxnSpNkb+kbiolEnlj5lQau7G48C
-# ao+sVcSfFwFIdkVUp91i2Ap3aZXUP0DChmd3tn8047O55rLDqrV0h3r4oYICojCC
+# AQsxDjAMBgorBgEEAYI3AgEVMCMGCSqGSIb3DQEJBDEWBBTmSoqXH1tv/gvCLX0U
+# fFcZNWao/jANBgkqhkiG9w0BAQEFAASCAQAL3VY/xWRKfETz84fLpjTLhzUqPd5I
+# hYnUIMn8bChPRGhM4M+Ml5By5GOPX39NODI6h/D9RiqxUo+ALbh2fxKbz2xng3Fy
+# IyRBV5lMGenNjSyVi8Kemib9BcV7L4Wl1XSJdsqDUi1PiXJaIsOcTzzFYrD0I+6o
+# ecs5IE6E9x0NSXH33R2IeexiWZ9HGL83SPz0doVcn/zkbsY9GM8AqKNQNlMeYbQe
+# 5NTQFe7UDAP9BOcZ+aoMsnN+bto1QTqRkqae7LztH1DsfeJamk28FN40wJxbSWRH
+# ASZWaxefVbYHDQH7/vtnQj1qvA7XWq9ejm5ZiWd5jiPjMBcOSpiK7uStoYICojCC
 # Ap4GCSqGSIb3DQEJBjGCAo8wggKLAgEBMGgwUjELMAkGA1UEBhMCQkUxGTAXBgNV
 # BAoTEEdsb2JhbFNpZ24gbnYtc2ExKDAmBgNVBAMTH0dsb2JhbFNpZ24gVGltZXN0
 # YW1waW5nIENBIC0gRzICEhEhQFwfDtJYiCvlTYaGuhHqRTAJBgUrDgMCGgUAoIH9
 # MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTE0MTEy
-# NzEyMDYzMFowIwYJKoZIhvcNAQkEMRYEFLWYjNtT6F8GoFewPoKFKk/zy2rTMIGd
+# NzEyNTUwMFowIwYJKoZIhvcNAQkEMRYEFN6bBeGWQXTQZkDwprDxYh9dInIFMIGd
 # BgsqhkiG9w0BCRACDDGBjTCBijCBhzCBhAQUjOafUBLh0aj7OV4uMeK0K947NDsw
 # bDBWpFQwUjELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2Ex
 # KDAmBgNVBAMTH0dsb2JhbFNpZ24gVGltZXN0YW1waW5nIENBIC0gRzICEhEhQFwf
-# DtJYiCvlTYaGuhHqRTANBgkqhkiG9w0BAQEFAASCAQAvw9SEd22zPfW4JQs/BGvA
-# BT4L7TcNXhyIKFgA7ah1yi0KjgU+sQnJNuCY1T5d1PFa4Cn3+NEcQw/osTibmHt7
-# 6xAZPaqOYBvaz/yhHkFS0zeFsY4hpri/MrB3JyKoJZlzveCH4lwR++zKPWJLt9z7
-# yIXcIFbfPyF/AgqotYbUZdzvlE4Oh1KDE4cICiNncFBOh9lqUbkfTj3A9BGoa+3z
-# Zr51CrjJ/5T29A/qm+tZbdNK/jVF4ZeYKLTOb2iWnEj2hnRBd1XIIo4b6J2StDKB
-# 277SAvUtmX1WzA5+QMmtqubOC1qZchLyg4EMEy7TtWnUfi9EGV2ILGL+wL0UxkLi
+# DtJYiCvlTYaGuhHqRTANBgkqhkiG9w0BAQEFAASCAQA5Qpwd1kPMXnHRXIauk9Fw
+# 0RJ+G0ro33YVCb16ONc/3j6qzSaTuiLQCXlzfIm3v53d039MEllWNp3k+Qcfd4bE
+# vay0z1ooDX7kw7ZCWh/D6OYspFINg/7UPwbgDISG/VmXrXywP4e1Iv9wiBtW4iGF
+# UOGbwwaa1RYVaJ4RJwwWYBUJbiTPeknEYvPAr14CkcXkX/BUg0MUxGgaUZ2MAHpq
+# Q0fTaSOVnTWTbZP7Fq3YGf3VV53u+Mg/6uZDhqA+lvOObBmNJIbcIikdVtVfsZc+
+# eR93C2gK0XpDea/G7pV5VX8AicvDlBUCPcXgLN0jnZehHJMU7jzfPj9VZ1xhsDky
 # SIG # End signature block
