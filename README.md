@@ -1,6 +1,10 @@
 biz.dfch.PS.Sccm.Utilities
 ==========================
 
+[![License](https://img.shields.io/badge/license-Apache%20License%202.0-blue.svg)](https://github.com/dfch/biz.dfch.PS.Sccm.Utilities/blob/master/LICENSE)
+![NuGet downloads](https://img.shields.io/nuget/dt/biz.dfch.PS.Sccm.Utilities.svg)
+![Version](https://img.shields.io/nuget/v/biz.dfch.PS.Sccm.Utilities.svg)
+
 Module: biz.dfch.PS.Sccm.Utilities
 
 d-fens GmbH, General-Guisan-Strasse 6, CH-6300 Zug, Switzerland
